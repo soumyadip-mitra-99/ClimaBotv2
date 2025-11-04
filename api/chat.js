@@ -109,7 +109,7 @@ Please provide a helpful response:`;
 
         // Updated API URL with v1beta and correct model name
         // Use the correct model name for v1beta API
-        const model = 'gemini-1.5-flash-latest'; // or 'gemini-pro'
+        const model = 'gemini-pro'; // Most stable model
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.GEMINI_API_KEY}`;
 
         console.log('API URL:', apiUrl.replace(process.env.GEMINI_API_KEY, 'API_KEY_HIDDEN'));
