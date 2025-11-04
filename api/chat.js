@@ -3,11 +3,11 @@ export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    
+
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
     }
-    
+
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Only POST requests allowed' });
     }
@@ -108,11 +108,12 @@ Please provide a helpful response:`;
         console.log('API Key prefix:', process.env.GEMINI_API_KEY?.substring(0, 10) + '...' || 'Not found');
 
         // Updated API URL with v1beta and correct model name
-        const model = 'gemini-1.5-flash'; // or 'gemini-1.5-pro' for more advanced responses
+        // Use the correct model name for v1beta API
+        const model = 'gemini-1.5-flash-latest'; // or 'gemini-pro'
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.GEMINI_API_KEY}`;
-        
+
         console.log('API URL:', apiUrl.replace(process.env.GEMINI_API_KEY, 'API_KEY_HIDDEN'));
-        
+
         const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
@@ -127,9 +128,9 @@ Please provide a helpful response:`;
         if (!response.ok) {
             const errorText = await response.text();
             console.error('Gemini API error response:', errorText);
-            
+
             let errorMessage = 'Failed to get response from AI service';
-            
+
             if (response.status === 400) {
                 errorMessage = 'Invalid request to AI service - check your API key format';
                 console.error('400 Error - Possible issues: Invalid API key format, malformed request, or quota exceeded');
@@ -164,10 +165,10 @@ Please provide a helpful response:`;
 
         // Extract the response with better error handling
         let result = "I apologize, but I couldn't generate a response right now. Please try again.";
-        
+
         if (data.candidates && data.candidates.length > 0) {
             const candidate = data.candidates[0];
-            
+
             // Check if the response was blocked
             if (candidate.finishReason === 'SAFETY') {
                 result = "I apologize, but I cannot provide a response to that query due to safety guidelines. Please try rephrasing your question.";
@@ -184,7 +185,7 @@ Please provide a helpful response:`;
     } catch (error) {
         console.error('Detailed error:', error);
         console.error('Error stack:', error.stack);
-        
+
         // Handle different types of errors
         let errorMessage = 'Internal server error';
         let statusCode = 500;
